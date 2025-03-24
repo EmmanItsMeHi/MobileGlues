@@ -19,23 +19,23 @@
 __attribute__((used)) const char* license = "GNU LGPL-2.1 License";
 
 extern char* (*MesaConvertShader)(const char *src, unsigned int type, unsigned int glsl, unsigned int essl);
-void init_libshaderconv() {
-    const char *shaderconv_lib = "libshaderconv";
-    const char *func_name = "MesaConvertShader";
-    const char *glslconv_name[] = {shaderconv_lib, NULL};
-    void* glslconv = open_lib(glslconv_name, shaderconv_lib);
-    if (glslconv == NULL) {
-        LOG_D("%s not found\n", shaderconv_lib);
-    }
-    else {
-        MesaConvertShader = (char * (*)(const char *,unsigned int,unsigned int,unsigned int))dlsym(glslconv, func_name);
-        if (MesaConvertShader) {
-            LOG_D("%s loaded\n", shaderconv_lib);
-        } else {
-            LOG_D("failed to load %s\n", shaderconv_lib);
-        }
-    }
-}
+/*void init_libshaderconv() {*/
+/*    const char *shaderconv_lib = "libshaderconv";*/
+/*    const char *func_name = "MesaConvertShader";*/
+/*    const char *glslconv_name[] = {shaderconv_lib, NULL};*/
+/*    void* glslconv = open_lib(glslconv_name, shaderconv_lib);*/
+/*    if (glslconv == NULL) {*/
+/*        LOG_D("%s not found\n", shaderconv_lib);*/
+/*    }*/
+/*    else {*/
+/*        MesaConvertShader = (char * (*)(const char *,unsigned int,unsigned int,unsigned int))dlsym(glslconv, func_name);*/
+/*        if (MesaConvertShader) {*/
+/*            LOG_D("%s loaded\n", shaderconv_lib);*/
+/*        } else {*/
+/*            LOG_D("failed to load %s\n", shaderconv_lib);*/
+/*        }*/
+/*    }*/
+/*}*/
 
 void init_config() {
     if(mkdir(MG_DIRECTORY_PATH, 0755) != 0 && errno != EEXIST) {
@@ -79,7 +79,7 @@ void proc_init() {
     init_target_egl();
     init_target_gles();
 
-    init_libshaderconv();
+    /*init_libshaderconv();*/
 
 #if PROFILING
     init_perfetto();
