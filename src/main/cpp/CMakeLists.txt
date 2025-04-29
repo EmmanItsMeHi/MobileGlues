@@ -4,7 +4,7 @@ project("mobileglues")
 
 enable_language(CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -35,6 +35,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         gl/framebuffer.cpp
         gl/texture.cpp
         gl/drawing.cpp
+        gl/multidraw.cpp
         gl/mg.cpp
         gl/buffer.cpp
         gl/getter.cpp
@@ -53,7 +54,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         config/settings.cpp
 )
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./includes)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        ./includes
+        ./3rdparty/xxhash)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         ${CMAKE_SOURCE_DIR}/libraries/${ANDROID_ABI}/libglslang.a
@@ -79,7 +82,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 target_include_directories(mobileglues PUBLIC
         ${CMAKE_SOURCE_DIR}/include
         )
-
 
 if (PROFILING)
         find_package(Threads)
