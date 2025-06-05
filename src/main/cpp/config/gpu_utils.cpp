@@ -4,7 +4,9 @@
 
 #include "gpu_utils.h"
 #include "../gles/loader.h"
+#if !defined(__APPLE__)
 #include "vulkan/vulkan.h"
+#endif
 
 #include <EGL/egl.h>
 #include <cstring>
@@ -23,7 +25,7 @@ static const char *vk_lib[] = {
 std::string getGPUInfo() {
     EGLDisplay eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if (eglDisplay == EGL_NO_DISPLAY || eglInitialize(eglDisplay, nullptr, nullptr) != EGL_TRUE)
-        return nullptr;
+        return "";
 
     EGLint egl_attributes[] = {
             EGL_BLUE_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_RED_SIZE, 8,
@@ -34,7 +36,7 @@ std::string getGPUInfo() {
     EGLint num_configs = 0;
     if (eglChooseConfig(eglDisplay, egl_attributes, nullptr, 0, &num_configs) != EGL_TRUE || num_configs == 0) {
         eglTerminate(eglDisplay);
-        return nullptr;
+        return "";
     }
 
     EGLConfig eglConfig;
@@ -44,13 +46,13 @@ std::string getGPUInfo() {
     EGLContext context = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, egl_context_attributes);
     if (context == EGL_NO_CONTEXT) {
         eglTerminate(eglDisplay);
-        return nullptr;
+        return "";
     }
 
     if (eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, context) != EGL_TRUE) {
         eglDestroyContext(eglDisplay, context);
         eglTerminate(eglDisplay);
-        return nullptr;
+        return "";
     }
 
     std::string renderer;
@@ -97,6 +99,8 @@ int hasVulkan13() {
     if (!vulkan_lib)
         return 0;
 
+#ifndef __APPLE__
+    
     typedef VkResult (*PFN_vkEnumerateInstanceExtensionProperties)(const char*, uint32_t*, VkExtensionProperties*);
     typedef VkResult (*PFN_vkCreateInstance)(const VkInstanceCreateInfo*, const VkAllocationCallbacks*, VkInstance*);
     typedef void (*PFN_vkDestroyInstance)(VkInstance, const VkAllocationCallbacks*);
@@ -179,4 +183,6 @@ int hasVulkan13() {
 
     dlclose(vulkan_lib);
     return 0;
+    
+#endif
 }
